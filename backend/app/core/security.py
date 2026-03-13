@@ -34,3 +34,19 @@ def verify_password(
 
 def get_password_hash(password: str) -> str:
     return password_hash.hash(password)
+
+
+def decode_supabase_token(token: str) -> dict:
+    """Decode and validate a Supabase JWT. Returns payload or raises."""
+    try:
+        payload = jwt.decode(
+            token,
+            settings.SUPABASE_JWT_SECRET,
+            algorithms=["HS256"],
+            audience="authenticated",
+        )
+        return payload
+    except jwt.ExpiredSignatureError:
+        raise ValueError("Token has expired")
+    except jwt.InvalidTokenError as e:
+        raise ValueError(f"Invalid token: {e}")
