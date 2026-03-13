@@ -1,3 +1,4 @@
-from .item import Item
+from .customer import Customer  # noqa: F401
+from .item import Item  # noqa: F401
 from .role import Permission, Role, RolePermission  # noqa: F401
-from .user import User
+from .user import User  # noqa: F401
