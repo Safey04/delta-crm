@@ -55,6 +55,7 @@ class Settings(BaseSettings):
     POSTGRES_USER: str
     POSTGRES_PASSWORD: str = ""
     POSTGRES_DB: str = ""
+    POSTGRES_POOL_MODE: str = ""
 
     @computed_field  # type: ignore[prop-decorator]
     @property
@@ -67,6 +68,12 @@ class Settings(BaseSettings):
             port=self.POSTGRES_PORT,
             path=self.POSTGRES_DB,
         )
+
+    S3_ENDPOINT: HttpUrl | None = None
+    S3_REGION: str | None = None
+    S3_ACCESS_KEY_ID: str | None = None
+    S3_ACCESS_KEY: str | None = None
+    S3_BUCKET: str = "harvest-plans"
 
     SMTP_TLS: bool = True
     SMTP_SSL: bool = False
