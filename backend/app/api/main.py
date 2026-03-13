@@ -9,6 +9,7 @@ from app.api.routes import (
     private,
     roles,
     service_requests,
+    service_visits,
     users,
     utils,
 )
@@ -24,6 +25,7 @@ api_router.include_router(customers.router)
 api_router.include_router(contacts.router)
 api_router.include_router(equipment.router)
 api_router.include_router(service_requests.router)
+api_router.include_router(service_visits.router)
 
 
 if settings.ENVIRONMENT == "local":
