@@ -1,3 +1,4 @@
+from .contact import Contact  # noqa: F401
 from .customer import Customer  # noqa: F401
 from .item import Item  # noqa: F401
 from .role import Permission, Role, RolePermission  # noqa: F401
