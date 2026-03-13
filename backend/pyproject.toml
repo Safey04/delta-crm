@@ -21,6 +21,7 @@ dependencies = [
     "pandas>=2.3.3",
     "reportlab>=4.0",
     "boto3>=1.42.38",
+    "supabase>=2.13.0",
 ]
 
 [dependency-groups]

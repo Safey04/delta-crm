@@ -69,6 +69,11 @@ class Settings(BaseSettings):
             path=self.POSTGRES_DB,
         )
 
+    SUPABASE_URL: str = ""
+    SUPABASE_ANON_KEY: str = ""
+    SUPABASE_SERVICE_ROLE_KEY: str = ""
+    SUPABASE_JWT_SECRET: str = ""
+
     S3_ENDPOINT: HttpUrl | None = None
     S3_REGION: str | None = None
     S3_ACCESS_KEY_ID: str | None = None
