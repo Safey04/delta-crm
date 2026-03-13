@@ -4,48 +4,50 @@ from datetime import datetime
 from pydantic import EmailStr
 from sqlmodel import Field, SQLModel
 
+from app.domain.role import RolePublic
 
-# Shared properties
+
 class UserBase(SQLModel):
     email: EmailStr = Field(unique=True, index=True, max_length=255)
     is_active: bool = True
-    is_superuser: bool = False
     full_name: str | None = Field(default=None, max_length=255)
+    phone: str | None = Field(default=None, max_length=50)
 
 
-# Properties to receive via API on creation
-class UserCreate(UserBase):
+class UserCreate(SQLModel):
+    """Manager creates a user — Supabase Auth account + local record."""
+    email: EmailStr
+    full_name: str | None = None
+    phone: str | None = None
     password: str = Field(min_length=8, max_length=128)
+    role_id: uuid.UUID
 
 
-class UserRegister(SQLModel):
-    email: EmailStr = Field(max_length=255)
-    password: str = Field(min_length=8, max_length=128)
-    full_name: str | None = Field(default=None, max_length=255)
-
-
-# Properties to receive via API on update, all are optional
-class UserUpdate(UserBase):
-    email: EmailStr | None = Field(default=None, max_length=255)  # type: ignore
-    password: str | None = Field(default=None, min_length=8, max_length=128)
+class UserUpdate(SQLModel):
+    email: EmailStr | None = None
+    full_name: str | None = None
+    phone: str | None = None
+    is_active: bool | None = None
+    role_id: uuid.UUID | None = None
 
 
 class UserUpdateMe(SQLModel):
-    full_name: str | None = Field(default=None, max_length=255)
-    email: EmailStr | None = Field(default=None, max_length=255)
+    full_name: str | None = None
+    phone: str | None = None
 
 
-class UpdatePassword(SQLModel):
-    current_password: str = Field(min_length=8, max_length=128)
-    new_password: str = Field(min_length=8, max_length=128)
-
-
-# Properties to return via API, id is always required
 class UserPublic(UserBase):
     id: uuid.UUID
-    created_at: datetime | None = None
+    role_id: uuid.UUID | None
+    role: RolePublic | None = None
+    created_at: datetime | None
 
 
 class UsersPublic(SQLModel):
     data: list[UserPublic]
     count: int
+
+
+class UpdatePassword(SQLModel):
+    current_password: str = Field(min_length=8, max_length=128)
+    new_password: str = Field(min_length=8, max_length=128)
