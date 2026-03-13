@@ -1,24 +1,44 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useNavigate } from "@tanstack/react-router"
+import { useCallback, useEffect, useState } from "react"
 
-import {
-  type Body_login_login_access_token as AccessToken,
-  LoginService,
-  type UserPublic,
-  type UserRegister,
-  UsersService,
-} from "@/client"
-import { handleError } from "@/utils"
+import { type UserPublic, UsersService } from "@/client"
+import { supabase } from "@/lib/supabase"
 import useCustomToast from "./useCustomToast"
 
+interface LoginCredentials {
+  email: string
+  password: string
+}
+
 const isLoggedIn = () => {
-  return localStorage.getItem("access_token") !== null
+  // Check synchronously via localStorage (Supabase persists session there)
+  const storageKey = `sb-${import.meta.env.VITE_SUPABASE_URL?.split("//")[1]?.split(".")[0]}-auth-token`
+  return localStorage.getItem(storageKey) !== null
 }
 
 const useAuth = () => {
   const navigate = useNavigate()
   const queryClient = useQueryClient()
   const { showErrorToast } = useCustomToast()
+  const [isReady, setIsReady] = useState(false)
+
+  // Listen for Supabase auth state changes
+  useEffect(() => {
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((event) => {
+      setIsReady(true)
+      if (event === "SIGNED_OUT") {
+        queryClient.clear()
+      }
+      if (event === "SIGNED_IN" || event === "TOKEN_REFRESHED") {
+        queryClient.invalidateQueries({ queryKey: ["currentUser"] })
+      }
+    })
+
+    return () => subscription.unsubscribe()
+  }, [queryClient])
 
   const { data: user } = useQuery<UserPublic | null, Error>({
     queryKey: ["currentUser"],
@@ -26,23 +46,14 @@ const useAuth = () => {
     enabled: isLoggedIn(),
   })
 
-  const signUpMutation = useMutation({
-    mutationFn: (data: UserRegister) =>
-      UsersService.registerUser({ requestBody: data }),
-    onSuccess: () => {
-      navigate({ to: "/login" })
-    },
-    onError: handleError.bind(showErrorToast),
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["users"] })
-    },
-  })
-
-  const login = async (data: AccessToken) => {
-    const response = await LoginService.loginAccessToken({
-      formData: data,
+  const login = async (credentials: LoginCredentials) => {
+    const { error } = await supabase.auth.signInWithPassword({
+      email: credentials.email,
+      password: credentials.password,
     })
-    localStorage.setItem("access_token", response.access_token)
+    if (error) {
+      throw new Error(error.message)
+    }
   }
 
   const loginMutation = useMutation({
@@ -50,19 +61,21 @@ const useAuth = () => {
     onSuccess: () => {
       navigate({ to: "/" })
     },
-    onError: handleError.bind(showErrorToast),
+    onError: (error: Error) => {
+      showErrorToast(error.message)
+    },
   })
 
-  const logout = () => {
-    localStorage.removeItem("access_token")
+  const logout = useCallback(async () => {
+    await supabase.auth.signOut()
     navigate({ to: "/login" })
-  }
+  }, [navigate])
 
   return {
-    signUpMutation,
     loginMutation,
     logout,
     user,
+    isReady,
   }
 }
 

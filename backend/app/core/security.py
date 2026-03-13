@@ -1,6 +1,3 @@
-from datetime import datetime, timedelta, timezone
-from typing import Any
-
 import jwt
 from pwdlib import PasswordHash
 from pwdlib.hashers.argon2 import Argon2Hasher
@@ -15,15 +12,8 @@ password_hash = PasswordHash(
     )
 )
 
-
+# Used by password-reset token generation/verification in app/utils.py
 ALGORITHM = "HS256"
-
-
-def create_access_token(subject: str | Any, expires_delta: timedelta) -> str:
-    expire = datetime.now(timezone.utc) + expires_delta
-    to_encode = {"exp": expire, "sub": str(subject)}
-    encoded_jwt = jwt.encode(to_encode, settings.SECRET_KEY, algorithm=ALGORITHM)
-    return encoded_jwt
 
 
 def verify_password(
@@ -34,3 +24,19 @@ def verify_password(
 
 def get_password_hash(password: str) -> str:
     return password_hash.hash(password)
+
+
+def decode_supabase_token(token: str) -> dict:
+    """Decode and validate a Supabase JWT. Returns payload or raises."""
+    try:
+        payload = jwt.decode(
+            token,
+            settings.SUPABASE_JWT_SECRET,
+            algorithms=["HS256"],
+            audience="authenticated",
+        )
+        return payload
+    except jwt.ExpiredSignatureError:
+        raise ValueError("Token has expired")
+    except jwt.InvalidTokenError as e:
+        raise ValueError(f"Invalid token: {e}")
