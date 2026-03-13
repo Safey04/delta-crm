@@ -51,17 +51,16 @@ export type ContactPublic = {
   phone: string | null
   email: string | null
   is_primary: boolean
-  notes: string | null
   created_at: string | null
 }
 
 export type ContactCreate = {
+  customer_id: string
   name: string
   title?: string | null
   phone?: string | null
   email?: string | null
   is_primary?: boolean
-  notes?: string | null
 }
 
 export type ContactUpdate = {
@@ -70,7 +69,6 @@ export type ContactUpdate = {
   phone?: string | null
   email?: string | null
   is_primary?: boolean | null
-  notes?: string | null
 }
 
 export type ContactsPublic = {
@@ -80,40 +78,35 @@ export type ContactsPublic = {
 
 export type EquipmentPublic = {
   id: string
-  customer_id: string | null
+  customer_id: string
   model: string
-  serial_number: string | null
+  serial_number: string
   manufacturer: string | null
   install_date: string | null
   warranty_expiry: string | null
-  location: string | null
-  status: string
   notes: string | null
+  is_active: boolean
   created_at: string | null
 }
 
 export type EquipmentCreate = {
-  customer_id?: string | null
+  customer_id: string
   model: string
-  serial_number?: string | null
+  serial_number: string
   manufacturer?: string | null
   install_date?: string | null
   warranty_expiry?: string | null
-  location?: string | null
-  status?: string
   notes?: string | null
 }
 
 export type EquipmentUpdate = {
-  customer_id?: string | null
   model?: string | null
   serial_number?: string | null
   manufacturer?: string | null
   install_date?: string | null
   warranty_expiry?: string | null
-  location?: string | null
-  status?: string | null
   notes?: string | null
+  is_active?: boolean | null
 }
 
 export type EquipmentListPublic = {
