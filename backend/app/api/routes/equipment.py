@@ -2,7 +2,8 @@ import uuid
 
 from fastapi import APIRouter, Depends, HTTPException
 
-from app.api.deps import CurrentUser, SessionDep, require_permission
+from app.api.deps import SessionDep, require_permission
+from app.models.user import User
 from app.domain.equipment import (
     EquipmentCreate,
     EquipmentListPublic,
@@ -22,7 +23,7 @@ router = APIRouter(tags=["equipment"])
 @router.get("/equipment", response_model=EquipmentListPublic)
 def read_all_equipment(
     session: SessionDep,
-    _: CurrentUser = Depends(require_permission("customer", "view")),
+    _: User = Depends(require_permission("customer", "view")),
     skip: int = 0,
     limit: int = 100,
     search: str | None = None,
@@ -43,7 +44,7 @@ def read_all_equipment(
 def read_equipment(
     equipment_id: uuid.UUID,
     session: SessionDep,
-    _: CurrentUser = Depends(require_permission("customer", "view")),
+    _: User = Depends(require_permission("customer", "view")),
 ):
     eq = equipment_repo.get_equipment_by_id(
         session=session, equipment_id=equipment_id
@@ -62,7 +63,7 @@ def read_equipment(
 def read_customer_equipment(
     customer_id: uuid.UUID,
     session: SessionDep,
-    _: CurrentUser = Depends(require_permission("customer", "view")),
+    _: User = Depends(require_permission("customer", "view")),
 ):
     customer = customer_repo.get_customer_by_id(
         session=session, customer_id=customer_id
@@ -85,7 +86,7 @@ def create_equipment(
     customer_id: uuid.UUID,
     session: SessionDep,
     equipment_in: EquipmentCreate,
-    _: CurrentUser = Depends(require_permission("customer", "edit")),
+    _: User = Depends(require_permission("customer", "edit")),
 ):
     if equipment_in.customer_id != customer_id:
         raise HTTPException(status_code=400, detail="Customer ID mismatch")
@@ -103,7 +104,7 @@ def update_equipment(
     equipment_id: uuid.UUID,
     session: SessionDep,
     equipment_in: EquipmentUpdate,
-    _: CurrentUser = Depends(require_permission("customer", "edit")),
+    _: User = Depends(require_permission("customer", "edit")),
 ):
     eq = equipment_repo.get_equipment_by_id(
         session=session, equipment_id=equipment_id
@@ -120,7 +121,7 @@ def update_equipment(
 def delete_equipment(
     equipment_id: uuid.UUID,
     session: SessionDep,
-    _: CurrentUser = Depends(require_permission("customer", "delete")),
+    _: User = Depends(require_permission("customer", "delete")),
 ):
     eq = equipment_repo.get_equipment_by_id(
         session=session, equipment_id=equipment_id

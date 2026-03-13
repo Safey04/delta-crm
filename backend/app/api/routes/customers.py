@@ -2,7 +2,8 @@ import uuid
 
 from fastapi import APIRouter, Depends, HTTPException
 
-from app.api.deps import CurrentUser, SessionDep, require_permission
+from app.api.deps import SessionDep, require_permission
+from app.models.user import User
 from app.domain.customer import (
     CustomerCreate,
     CustomerPublic,
@@ -17,7 +18,7 @@ router = APIRouter(prefix="/customers", tags=["customers"])
 @router.get("/", response_model=CustomersPublic)
 def read_customers(
     session: SessionDep,
-    _: CurrentUser = Depends(require_permission("customer", "view")),
+    _: User = Depends(require_permission("customer", "view")),
     skip: int = 0,
     limit: int = 100,
     segment: str | None = None,
@@ -47,7 +48,7 @@ def read_customers(
 def create_customer(
     session: SessionDep,
     customer_in: CustomerCreate,
-    _: CurrentUser = Depends(require_permission("customer", "create")),
+    _: User = Depends(require_permission("customer", "create")),
 ):
     customer = customer_repo.create_customer(session=session, customer_in=customer_in)
     return CustomerPublic.model_validate(customer)
@@ -57,7 +58,7 @@ def create_customer(
 def read_customer(
     customer_id: uuid.UUID,
     session: SessionDep,
-    _: CurrentUser = Depends(require_permission("customer", "view")),
+    _: User = Depends(require_permission("customer", "view")),
 ):
     customer = customer_repo.get_customer_by_id(
         session=session, customer_id=customer_id
@@ -72,7 +73,7 @@ def update_customer(
     customer_id: uuid.UUID,
     session: SessionDep,
     customer_in: CustomerUpdate,
-    _: CurrentUser = Depends(require_permission("customer", "edit")),
+    _: User = Depends(require_permission("customer", "edit")),
 ):
     customer = customer_repo.get_customer_by_id(
         session=session, customer_id=customer_id
@@ -89,7 +90,7 @@ def update_customer(
 def delete_customer(
     customer_id: uuid.UUID,
     session: SessionDep,
-    _: CurrentUser = Depends(require_permission("customer", "delete")),
+    _: User = Depends(require_permission("customer", "delete")),
 ):
     customer = customer_repo.get_customer_by_id(
         session=session, customer_id=customer_id

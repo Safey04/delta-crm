@@ -3,6 +3,7 @@ import uuid
 from fastapi import APIRouter, Depends, HTTPException
 
 from app.api.deps import CurrentUser, SessionDep, require_permission
+from app.models.user import User
 from app.domain.service_request import (
     ServiceRequestCreate,
     ServiceRequestPublic,
@@ -19,7 +20,7 @@ router = APIRouter(prefix="/service-requests", tags=["service-requests"])
 @router.get("/", response_model=ServiceRequestsPublic)
 def read_service_requests(
     session: SessionDep,
-    _: CurrentUser = Depends(require_permission("service_request", "view")),
+    _: User = Depends(require_permission("service_request", "view")),
     skip: int = 0,
     limit: int = 100,
     status: str | None = None,
@@ -54,7 +55,7 @@ def create_service_request(
     session: SessionDep,
     request_in: ServiceRequestCreate,
     current_user: CurrentUser,
-    _: CurrentUser = Depends(require_permission("service_request", "create")),
+    _: User = Depends(require_permission("service_request", "create")),
 ):
     customer = customer_repo.get_customer_by_id(
         session=session, customer_id=request_in.customer_id
@@ -74,7 +75,7 @@ def create_service_request(
 def read_service_request(
     request_id: uuid.UUID,
     session: SessionDep,
-    _: CurrentUser = Depends(require_permission("service_request", "view")),
+    _: User = Depends(require_permission("service_request", "view")),
 ):
     sr = sr_repo.get_service_request_by_id(session=session, request_id=request_id)
     if not sr:
@@ -87,7 +88,7 @@ def update_service_request(
     request_id: uuid.UUID,
     session: SessionDep,
     request_in: ServiceRequestUpdate,
-    _: CurrentUser = Depends(require_permission("service_request", "edit")),
+    _: User = Depends(require_permission("service_request", "edit")),
 ):
     sr = sr_repo.get_service_request_by_id(session=session, request_id=request_id)
     if not sr:
@@ -103,7 +104,7 @@ def update_service_request_status(
     request_id: uuid.UUID,
     session: SessionDep,
     status_update: ServiceRequestStatusUpdate,
-    _: CurrentUser = Depends(require_permission("service_request", "edit")),
+    _: User = Depends(require_permission("service_request", "edit")),
 ):
     sr = sr_repo.get_service_request_by_id(session=session, request_id=request_id)
     if not sr:
@@ -124,7 +125,7 @@ def assign_engineer(
     request_id: uuid.UUID,
     session: SessionDep,
     engineer_id: uuid.UUID,
-    _: CurrentUser = Depends(require_permission("service_request", "edit")),
+    _: User = Depends(require_permission("service_request", "edit")),
 ):
     sr = sr_repo.get_service_request_by_id(session=session, request_id=request_id)
     if not sr:

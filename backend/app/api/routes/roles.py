@@ -3,6 +3,7 @@ import uuid
 from fastapi import APIRouter, Depends, HTTPException
 
 from app.api.deps import CurrentUser, SessionDep, require_permission
+from app.models.user import User
 from app.domain.role import (
     PermissionsPublic,
     RoleCreate,
@@ -33,7 +34,7 @@ def read_roles(
 def create_role(
     session: SessionDep,
     role_in: RoleCreate,
-    _: CurrentUser = Depends(require_permission("user", "create")),
+    _: User = Depends(require_permission("user", "create")),
 ):
     existing = role_repo.get_role_by_name(session=session, name=role_in.name)
     if existing:
@@ -75,7 +76,7 @@ def update_role(
     role_id: uuid.UUID,
     session: SessionDep,
     role_in: RoleUpdate,
-    _: CurrentUser = Depends(require_permission("user", "edit")),
+    _: User = Depends(require_permission("user", "edit")),
 ):
     role = role_repo.get_role_by_id(session=session, role_id=role_id)
     if not role:
@@ -89,7 +90,7 @@ def set_role_permissions(
     role_id: uuid.UUID,
     session: SessionDep,
     perm_set: RolePermissionSet,
-    _: CurrentUser = Depends(require_permission("user", "edit")),
+    _: User = Depends(require_permission("user", "edit")),
 ):
     role = role_repo.get_role_by_id(session=session, role_id=role_id)
     if not role:
@@ -108,7 +109,7 @@ def set_role_permissions(
 def delete_role(
     role_id: uuid.UUID,
     session: SessionDep,
-    _: CurrentUser = Depends(require_permission("user", "delete")),
+    _: User = Depends(require_permission("user", "delete")),
 ):
     role = role_repo.get_role_by_id(session=session, role_id=role_id)
     if not role:

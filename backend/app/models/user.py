@@ -16,5 +16,5 @@ class User(UserBase, table=True):
     updated_at: datetime | None = Field(default_factory=get_datetime_utc)
 
     # Relationships
-    role: "Role | None" = Relationship(back_populates="users")
+    role: "Role" = Relationship(back_populates="users")  # nullable via FK
     items: list["Item"] = Relationship(back_populates="owner", cascade_delete=True)

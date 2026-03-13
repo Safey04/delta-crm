@@ -3,6 +3,7 @@ import uuid
 from fastapi import APIRouter, Depends, HTTPException
 
 from app.api.deps import CurrentUser, SessionDep, require_permission
+from app.models.user import User
 from app.domain.user import (
     UserCreate,
     UserPublic,
@@ -18,7 +19,7 @@ router = APIRouter(prefix="/users", tags=["users"])
 @router.get("/", response_model=UsersPublic)
 def read_users(
     session: SessionDep,
-    _: CurrentUser = Depends(require_permission("user", "view")),
+    _: User = Depends(require_permission("user", "view")),
     skip: int = 0,
     limit: int = 100,
 ):
@@ -31,7 +32,7 @@ def read_users(
 def create_user(
     session: SessionDep,
     user_in: UserCreate,
-    _: CurrentUser = Depends(require_permission("user", "create")),
+    _: User = Depends(require_permission("user", "create")),
 ):
     existing = user_repo.get_user_by_email(session=session, email=user_in.email)
     if existing:
@@ -60,7 +61,7 @@ def update_user_me(
 def read_user_by_id(
     user_id: uuid.UUID,
     session: SessionDep,
-    _: CurrentUser = Depends(require_permission("user", "view")),
+    _: User = Depends(require_permission("user", "view")),
 ):
     user = user_repo.get_user_by_id(session=session, user_id=user_id)
     if not user:
@@ -73,7 +74,7 @@ def update_user(
     user_id: uuid.UUID,
     session: SessionDep,
     user_in: UserUpdate,
-    _: CurrentUser = Depends(require_permission("user", "edit")),
+    _: User = Depends(require_permission("user", "edit")),
 ):
     user = user_repo.get_user_by_id(session=session, user_id=user_id)
     if not user:
@@ -86,7 +87,7 @@ def update_user(
 def deactivate_user(
     user_id: uuid.UUID,
     session: SessionDep,
-    _: CurrentUser = Depends(require_permission("user", "edit")),
+    _: User = Depends(require_permission("user", "edit")),
 ):
     user = user_repo.get_user_by_id(session=session, user_id=user_id)
     if not user:
@@ -99,7 +100,7 @@ def deactivate_user(
 def activate_user(
     user_id: uuid.UUID,
     session: SessionDep,
-    _: CurrentUser = Depends(require_permission("user", "edit")),
+    _: User = Depends(require_permission("user", "edit")),
 ):
     user = user_repo.get_user_by_id(session=session, user_id=user_id)
     if not user:

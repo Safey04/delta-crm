@@ -3,6 +3,7 @@ import uuid
 from fastapi import APIRouter, Depends, HTTPException
 
 from app.api.deps import CurrentUser, SessionDep, require_permission
+from app.models.user import User
 from app.domain.service_visit import (
     ServiceVisitCreate,
     ServiceVisitPublic,
@@ -22,7 +23,7 @@ router = APIRouter(
 def read_visits(
     request_id: uuid.UUID,
     session: SessionDep,
-    _: CurrentUser = Depends(require_permission("service_request", "view")),
+    _: User = Depends(require_permission("service_request", "view")),
 ):
     sr = sr_repo.get_service_request_by_id(session=session, request_id=request_id)
     if not sr:
@@ -47,7 +48,7 @@ def create_visit(
     session: SessionDep,
     visit_in: ServiceVisitCreate,
     current_user: CurrentUser,
-    _: CurrentUser = Depends(require_permission("service_request", "edit")),
+    _: User = Depends(require_permission("service_request", "edit")),
 ):
     sr = sr_repo.get_service_request_by_id(session=session, request_id=request_id)
     if not sr:
@@ -69,7 +70,7 @@ def update_visit(
     visit_id: uuid.UUID,
     session: SessionDep,
     visit_in: ServiceVisitUpdate,
-    _: CurrentUser = Depends(require_permission("service_request", "edit")),
+    _: User = Depends(require_permission("service_request", "edit")),
 ):
     visit = visit_repo.get_service_visit_by_id(session=session, visit_id=visit_id)
     if not visit or visit.service_request_id != request_id:

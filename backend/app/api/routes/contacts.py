@@ -2,7 +2,8 @@ import uuid
 
 from fastapi import APIRouter, Depends, HTTPException
 
-from app.api.deps import CurrentUser, SessionDep, require_permission
+from app.api.deps import SessionDep, require_permission
+from app.models.user import User
 from app.domain.contact import (
     ContactCreate,
     ContactPublic,
@@ -19,7 +20,7 @@ router = APIRouter(prefix="/customers/{customer_id}/contacts", tags=["contacts"]
 def read_contacts(
     customer_id: uuid.UUID,
     session: SessionDep,
-    _: CurrentUser = Depends(require_permission("customer", "view")),
+    _: User = Depends(require_permission("customer", "view")),
 ):
     customer = customer_repo.get_customer_by_id(
         session=session, customer_id=customer_id
@@ -42,7 +43,7 @@ def create_contact(
     customer_id: uuid.UUID,
     session: SessionDep,
     contact_in: ContactCreate,
-    _: CurrentUser = Depends(require_permission("customer", "edit")),
+    _: User = Depends(require_permission("customer", "edit")),
 ):
     if contact_in.customer_id != customer_id:
         raise HTTPException(status_code=400, detail="Customer ID mismatch")
@@ -61,7 +62,7 @@ def update_contact(
     contact_id: uuid.UUID,
     session: SessionDep,
     contact_in: ContactUpdate,
-    _: CurrentUser = Depends(require_permission("customer", "edit")),
+    _: User = Depends(require_permission("customer", "edit")),
 ):
     contact = contact_repo.get_contact_by_id(session=session, contact_id=contact_id)
     if not contact or contact.customer_id != customer_id:
@@ -77,7 +78,7 @@ def delete_contact(
     customer_id: uuid.UUID,
     contact_id: uuid.UUID,
     session: SessionDep,
-    _: CurrentUser = Depends(require_permission("customer", "edit")),
+    _: User = Depends(require_permission("customer", "edit")),
 ):
     contact = contact_repo.get_contact_by_id(session=session, contact_id=contact_id)
     if not contact or contact.customer_id != customer_id:

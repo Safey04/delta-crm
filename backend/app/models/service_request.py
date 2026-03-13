@@ -39,7 +39,7 @@ class ServiceRequest(ServiceRequestBase, table=True):
 
     # Relationships
     customer: "Customer" = Relationship(back_populates="service_requests")  # noqa: F821
-    equipment: "Equipment | None" = Relationship(  # noqa: F821
+    equipment: "Equipment" = Relationship(  # noqa: F821  # nullable via FK
         back_populates="service_requests"
     )
     service_visits: list["ServiceVisit"] = Relationship(  # noqa: F821
