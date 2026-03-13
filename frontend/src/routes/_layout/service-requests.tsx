@@ -1,12 +1,21 @@
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useMutation, useQuery, useQueryClient, useSuspenseQuery } from "@tanstack/react-query"
+import {
+  useMutation,
+  useQuery,
+  useQueryClient,
+  useSuspenseQuery,
+} from "@tanstack/react-query"
 import { createFileRoute, Link } from "@tanstack/react-router"
 import { Plus, Wrench } from "lucide-react"
 import { Suspense, useState } from "react"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 
-import { CustomersService, EquipmentService, ServiceRequestsService } from "@/client/crm-services"
+import {
+  CustomersService,
+  EquipmentService,
+  ServiceRequestsService,
+} from "@/client/crm-services"
 import type { ServiceRequestPublic } from "@/client/crm-types"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -56,7 +65,10 @@ export const Route = createFileRoute("/_layout/service-requests")({
   }),
 })
 
-const statusColors: Record<string, "default" | "secondary" | "destructive" | "outline"> = {
+const statusColors: Record<
+  string,
+  "default" | "secondary" | "destructive" | "outline"
+> = {
   new: "outline",
   assigned: "secondary",
   in_progress: "default",
@@ -66,7 +78,10 @@ const statusColors: Record<string, "default" | "secondary" | "destructive" | "ou
   cancelled: "destructive",
 }
 
-const priorityColors: Record<string, "default" | "secondary" | "destructive" | "outline"> = {
+const priorityColors: Record<
+  string,
+  "default" | "secondary" | "destructive" | "outline"
+> = {
   low: "outline",
   medium: "secondary",
   high: "default",

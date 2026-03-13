@@ -171,15 +171,16 @@ def unauthenticated_client(
 
 
 # ---------------------------------------------------------------------------
-# Legacy compatibility stubs — skip old tests gracefully until Task 26
+# Legacy compatibility stubs — tests using these fixtures are skipped until
+# they are rewritten to use the role-based auth override fixtures above.
 # ---------------------------------------------------------------------------
 
 
 @pytest.fixture(scope="module")
 def superuser_token_headers() -> dict[str, str]:
-    pytest.skip("Legacy auth — to be migrated in Task 26")
+    pytest.skip("Legacy auth removed — rewrite test to use as_manager fixture")
 
 
 @pytest.fixture(scope="module")
 def normal_user_token_headers() -> dict[str, str]:
-    pytest.skip("Legacy auth — to be migrated in Task 26")
+    pytest.skip("Legacy auth removed — rewrite test to use role-based fixture")

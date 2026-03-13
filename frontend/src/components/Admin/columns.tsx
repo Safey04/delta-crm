@@ -1,11 +1,11 @@
 import type { ColumnDef } from "@tanstack/react-table"
 
-import type { UserPublic } from "@/client"
+import type { UserPublicCRM } from "@/client/crm-types"
 import { Badge } from "@/components/ui/badge"
 import { cn } from "@/lib/utils"
 import { UserActionsMenu } from "./UserActionsMenu"
 
-export type UserTableData = UserPublic & {
+export type UserTableData = UserPublicCRM & {
   isCurrentUser: boolean
 }
 
@@ -39,13 +39,25 @@ export const columns: ColumnDef<UserTableData>[] = [
     ),
   },
   {
-    accessorKey: "is_superuser",
-    header: "Role",
+    accessorKey: "phone",
+    header: "Phone",
     cell: ({ row }) => (
-      <Badge variant={row.original.is_superuser ? "default" : "secondary"}>
-        {row.original.is_superuser ? "Superuser" : "User"}
-      </Badge>
+      <span className="text-muted-foreground">
+        {row.original.phone || "--"}
+      </span>
     ),
+  },
+  {
+    id: "role",
+    header: "Role",
+    cell: ({ row }) => {
+      const role = row.original.role
+      return (
+        <Badge variant={role?.is_system ? "default" : "secondary"}>
+          {role?.name ?? "No role"}
+        </Badge>
+      )
+    },
   },
   {
     accessorKey: "is_active",

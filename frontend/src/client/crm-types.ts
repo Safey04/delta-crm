@@ -183,3 +183,77 @@ export type ServiceVisitCreate = {
   departure_time?: string | null
   notes?: string | null
 }
+
+export type RolePublic = {
+  id: string
+  name: string
+  description: string | null
+  is_system: boolean
+}
+
+export type RolesPublic = {
+  data: RolePublic[]
+  count: number
+}
+
+export type RoleCreate = {
+  name: string
+  description?: string | null
+}
+
+export type RoleUpdate = {
+  name?: string | null
+  description?: string | null
+}
+
+export type PermissionPublic = {
+  id: string
+  resource: string
+  action: string
+  description: string | null
+}
+
+export type PermissionsPublic = {
+  data: PermissionPublic[]
+  count: number
+}
+
+export type RolePermissionSet = {
+  permission_ids: string[]
+}
+
+export type RoleWithPermissions = RolePublic & {
+  permissions: PermissionPublic[]
+}
+
+export type UserPublicCRM = {
+  id: string
+  email: string
+  is_active: boolean
+  full_name: string | null
+  phone: string | null
+  role_id: string | null
+  role: RolePublic | null
+  created_at: string | null
+}
+
+export type UsersPublicCRM = {
+  data: UserPublicCRM[]
+  count: number
+}
+
+export type UserCreateCRM = {
+  email: string
+  full_name?: string | null
+  phone?: string | null
+  password: string
+  role_id: string
+}
+
+export type UserUpdateCRM = {
+  email?: string | null
+  full_name?: string | null
+  phone?: string | null
+  is_active?: boolean | null
+  role_id?: string | null
+}

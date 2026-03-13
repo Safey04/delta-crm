@@ -23,6 +23,17 @@ import type {
   ServiceVisitCreate,
   ServiceVisitPublic,
   ServiceVisitsPublic,
+  RoleCreate,
+  RolePublic,
+  RoleUpdate,
+  RolesPublic,
+  RoleWithPermissions,
+  RolePermissionSet,
+  PermissionsPublic,
+  UserCreateCRM,
+  UserPublicCRM,
+  UserUpdateCRM,
+  UsersPublicCRM,
 } from "./crm-types"
 
 export class CustomersService {
@@ -339,6 +350,169 @@ export class ServiceVisitsService {
       path: { request_id: data.requestId },
       body: data.requestBody,
       mediaType: "application/json",
+    })
+  }
+}
+
+export class RolesService {
+  public static readRoles(): CancelablePromise<RolesPublic> {
+    return __request(OpenAPI, {
+      method: "GET",
+      url: "/api/v1/roles/",
+    })
+  }
+
+  public static createRole(data: {
+    requestBody: RoleCreate
+  }): CancelablePromise<RolePublic> {
+    return __request(OpenAPI, {
+      method: "POST",
+      url: "/api/v1/roles/",
+      body: data.requestBody,
+      mediaType: "application/json",
+    })
+  }
+
+  public static readPermissions(): CancelablePromise<PermissionsPublic> {
+    return __request(OpenAPI, {
+      method: "GET",
+      url: "/api/v1/roles/permissions",
+    })
+  }
+
+  public static readRole(data: {
+    roleId: string
+  }): CancelablePromise<RoleWithPermissions> {
+    return __request(OpenAPI, {
+      method: "GET",
+      url: "/api/v1/roles/{role_id}",
+      path: {
+        role_id: data.roleId,
+      },
+    })
+  }
+
+  public static updateRole(data: {
+    roleId: string
+    requestBody: RoleUpdate
+  }): CancelablePromise<RolePublic> {
+    return __request(OpenAPI, {
+      method: "PATCH",
+      url: "/api/v1/roles/{role_id}",
+      path: {
+        role_id: data.roleId,
+      },
+      body: data.requestBody,
+      mediaType: "application/json",
+    })
+  }
+
+  public static setRolePermissions(data: {
+    roleId: string
+    requestBody: RolePermissionSet
+  }): CancelablePromise<RoleWithPermissions> {
+    return __request(OpenAPI, {
+      method: "PUT",
+      url: "/api/v1/roles/{role_id}/permissions",
+      path: {
+        role_id: data.roleId,
+      },
+      body: data.requestBody,
+      mediaType: "application/json",
+    })
+  }
+
+  public static deleteRole(data: {
+    roleId: string
+  }): CancelablePromise<void> {
+    return __request(OpenAPI, {
+      method: "DELETE",
+      url: "/api/v1/roles/{role_id}",
+      path: {
+        role_id: data.roleId,
+      },
+    })
+  }
+}
+
+export class UsersAdminService {
+  public static readUsers(
+    data: {
+      skip?: number
+      limit?: number
+      role_id?: string | null
+    } = {},
+  ): CancelablePromise<UsersPublicCRM> {
+    return __request(OpenAPI, {
+      method: "GET",
+      url: "/api/v1/users/",
+      query: {
+        skip: data.skip,
+        limit: data.limit,
+        role_id: data.role_id,
+      },
+    })
+  }
+
+  public static createUser(data: {
+    requestBody: UserCreateCRM
+  }): CancelablePromise<UserPublicCRM> {
+    return __request(OpenAPI, {
+      method: "POST",
+      url: "/api/v1/users/",
+      body: data.requestBody,
+      mediaType: "application/json",
+    })
+  }
+
+  public static readUser(data: {
+    userId: string
+  }): CancelablePromise<UserPublicCRM> {
+    return __request(OpenAPI, {
+      method: "GET",
+      url: "/api/v1/users/{user_id}",
+      path: {
+        user_id: data.userId,
+      },
+    })
+  }
+
+  public static updateUser(data: {
+    userId: string
+    requestBody: UserUpdateCRM
+  }): CancelablePromise<UserPublicCRM> {
+    return __request(OpenAPI, {
+      method: "PATCH",
+      url: "/api/v1/users/{user_id}",
+      path: {
+        user_id: data.userId,
+      },
+      body: data.requestBody,
+      mediaType: "application/json",
+    })
+  }
+
+  public static deactivateUser(data: {
+    userId: string
+  }): CancelablePromise<UserPublicCRM> {
+    return __request(OpenAPI, {
+      method: "POST",
+      url: "/api/v1/users/{user_id}/deactivate",
+      path: {
+        user_id: data.userId,
+      },
+    })
+  }
+
+  public static activateUser(data: {
+    userId: string
+  }): CancelablePromise<UserPublicCRM> {
+    return __request(OpenAPI, {
+      method: "POST",
+      url: "/api/v1/users/{user_id}/activate",
+      path: {
+        user_id: data.userId,
+      },
     })
   }
 }

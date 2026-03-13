@@ -11,12 +11,6 @@ interface LoginCredentials {
   password: string
 }
 
-interface SignUpCredentials {
-  email: string
-  password: string
-  full_name: string
-}
-
 const isLoggedIn = () => {
   // Check synchronously via localStorage (Supabase persists session there)
   const storageKey = `sb-${import.meta.env.VITE_SUPABASE_URL?.split("//")[1]?.split(".")[0]}-auth-token`
@@ -72,36 +66,12 @@ const useAuth = () => {
     },
   })
 
-  const signUp = async (credentials: SignUpCredentials) => {
-    const { error } = await supabase.auth.signUp({
-      email: credentials.email,
-      password: credentials.password,
-      options: {
-        data: { full_name: credentials.full_name },
-      },
-    })
-    if (error) {
-      throw new Error(error.message)
-    }
-  }
-
-  const signUpMutation = useMutation({
-    mutationFn: signUp,
-    onSuccess: () => {
-      navigate({ to: "/login" })
-    },
-    onError: (error: Error) => {
-      showErrorToast(error.message)
-    },
-  })
-
   const logout = useCallback(async () => {
     await supabase.auth.signOut()
     navigate({ to: "/login" })
   }, [navigate])
 
   return {
-    signUpMutation,
     loginMutation,
     logout,
     user,

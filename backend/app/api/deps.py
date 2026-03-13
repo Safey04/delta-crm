@@ -10,8 +10,10 @@ from app.core.db import engine
 from app.core.security import decode_supabase_token
 from app.models.user import User
 
+# tokenUrl is only used by Swagger UI's "Authorize" dialog.
+# Auth is handled by Supabase; the Bearer token in the header is a Supabase JWT.
 reusable_oauth2 = OAuth2PasswordBearer(
-    tokenUrl=f"{settings.API_V1_STR}/login/access-token"
+    tokenUrl=f"{settings.API_V1_STR}/login/test-token"
 )
 
 
@@ -61,11 +63,8 @@ CurrentUser = Annotated[User, Depends(get_current_user)]
 
 
 def get_current_active_superuser(current_user: CurrentUser) -> User:
-    """Deprecated: kept for backward compatibility during migration.
-
-    Will be removed in Task 26 (Remove Legacy Auth Code).
-    Use require_permission() for new routes instead.
-    """
+    """Deprecated: kept for backward compatibility with routes not yet migrated
+    to the RBAC permission system. Use require_permission() for new routes."""
     if not current_user.is_superuser:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
