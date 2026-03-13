@@ -105,6 +105,21 @@ def init_db(session: Session) -> None:
     # Seed roles and permissions
     seed_roles_and_permissions(session)
 
+    # Seed default SLA configs
+    from app.domain.sla_config import SLAConfigCreate
+    from app.repository import sla_config as sla_repo
+    from app.services.sla import DEFAULT_SLA
+
+    for segment, hours in DEFAULT_SLA.items():
+        sla_repo.upsert_sla_config(
+            session=session,
+            config_in=SLAConfigCreate(
+                segment=segment,
+                response_hours=hours["response"],
+                resolution_hours=hours["resolution"],
+            ),
+        )
+
     # Create first superuser (manager role) if doesn't exist
     user = user_repo.get_user_by_email(session=session, email=settings.FIRST_SUPERUSER)
     if not user:
