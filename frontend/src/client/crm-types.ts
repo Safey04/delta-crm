@@ -113,3 +113,73 @@ export type EquipmentListPublic = {
   data: EquipmentPublic[]
   count: number
 }
+
+export type EquipmentWithCustomer = EquipmentPublic & {
+  customer_name: string | null
+}
+
+export type ServiceRequestPublic = {
+  id: string
+  customer_id: string
+  equipment_id: string | null
+  assigned_engineer_id: string | null
+  description: string
+  priority: string
+  source: string
+  status: string
+  diagnosis: string | null
+  resolution_notes: string | null
+  sla_response_due: string | null
+  sla_resolution_due: string | null
+  sla_response_breached: boolean
+  sla_resolution_breached: boolean
+  created_by: string | null
+  created_at: string | null
+  updated_at: string | null
+}
+
+export type ServiceRequestsPublic = {
+  data: ServiceRequestPublic[]
+  count: number
+}
+
+export type ServiceRequestCreate = {
+  customer_id: string
+  equipment_id?: string | null
+  description: string
+  priority?: string
+  source?: string
+}
+
+export type ServiceRequestUpdate = {
+  description?: string | null
+  priority?: string | null
+  diagnosis?: string | null
+  resolution_notes?: string | null
+  assigned_engineer_id?: string | null
+  status?: string | null
+}
+
+export type ServiceVisitPublic = {
+  id: string
+  service_request_id: string
+  engineer_id: string
+  visit_date: string
+  arrival_time: string | null
+  departure_time: string | null
+  notes: string | null
+  created_at: string | null
+}
+
+export type ServiceVisitsPublic = {
+  data: ServiceVisitPublic[]
+  count: number
+}
+
+export type ServiceVisitCreate = {
+  service_request_id: string
+  visit_date: string
+  arrival_time?: string | null
+  departure_time?: string | null
+  notes?: string | null
+}

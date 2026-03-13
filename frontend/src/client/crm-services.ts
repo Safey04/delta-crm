@@ -16,6 +16,13 @@ import type {
   EquipmentPublic,
   EquipmentUpdate,
   EquipmentListPublic,
+  ServiceRequestCreate,
+  ServiceRequestPublic,
+  ServiceRequestUpdate,
+  ServiceRequestsPublic,
+  ServiceVisitCreate,
+  ServiceVisitPublic,
+  ServiceVisitsPublic,
 } from "./crm-types"
 
 export class CustomersService {
@@ -222,6 +229,116 @@ export class EquipmentService {
       path: {
         equipment_id: data.equipmentId,
       },
+    })
+  }
+}
+
+export class ServiceRequestsService {
+  public static readServiceRequests(
+    data: {
+      skip?: number
+      limit?: number
+      status?: string | null
+      priority?: string | null
+      customer_id?: string | null
+      assigned_engineer_id?: string | null
+    } = {},
+  ): CancelablePromise<ServiceRequestsPublic> {
+    return __request(OpenAPI, {
+      method: "GET",
+      url: "/api/v1/service-requests/",
+      query: {
+        skip: data.skip,
+        limit: data.limit,
+        status: data.status,
+        priority: data.priority,
+        customer_id: data.customer_id,
+        assigned_engineer_id: data.assigned_engineer_id,
+      },
+    })
+  }
+
+  public static createServiceRequest(data: {
+    requestBody: ServiceRequestCreate
+  }): CancelablePromise<ServiceRequestPublic> {
+    return __request(OpenAPI, {
+      method: "POST",
+      url: "/api/v1/service-requests/",
+      body: data.requestBody,
+      mediaType: "application/json",
+    })
+  }
+
+  public static readServiceRequest(data: {
+    requestId: string
+  }): CancelablePromise<ServiceRequestPublic> {
+    return __request(OpenAPI, {
+      method: "GET",
+      url: "/api/v1/service-requests/{request_id}",
+      path: { request_id: data.requestId },
+    })
+  }
+
+  public static updateServiceRequest(data: {
+    requestId: string
+    requestBody: ServiceRequestUpdate
+  }): CancelablePromise<ServiceRequestPublic> {
+    return __request(OpenAPI, {
+      method: "PATCH",
+      url: "/api/v1/service-requests/{request_id}",
+      path: { request_id: data.requestId },
+      body: data.requestBody,
+      mediaType: "application/json",
+    })
+  }
+
+  public static updateStatus(data: {
+    requestId: string
+    requestBody: { status: string; notes?: string | null }
+  }): CancelablePromise<ServiceRequestPublic> {
+    return __request(OpenAPI, {
+      method: "POST",
+      url: "/api/v1/service-requests/{request_id}/status",
+      path: { request_id: data.requestId },
+      body: data.requestBody,
+      mediaType: "application/json",
+    })
+  }
+
+  public static assignEngineer(data: {
+    requestId: string
+    engineerId: string
+  }): CancelablePromise<ServiceRequestPublic> {
+    return __request(OpenAPI, {
+      method: "POST",
+      url: "/api/v1/service-requests/{request_id}/assign",
+      path: { request_id: data.requestId },
+      query: { engineer_id: data.engineerId },
+    })
+  }
+}
+
+export class ServiceVisitsService {
+  public static readVisits(data: {
+    requestId: string
+  }): CancelablePromise<ServiceVisitsPublic> {
+    return __request(OpenAPI, {
+      method: "GET",
+      url: "/api/v1/service-requests/{request_id}/visits/",
+      path: { request_id: data.requestId },
+    })
+  }
+
+  public static createVisit(data: {
+    requestId: string
+    requestBody: ServiceVisitCreate
+  }): CancelablePromise<ServiceVisitPublic> {
+    return __request(OpenAPI, {
+      method: "POST",
+      url: "/api/v1/service-requests/{request_id}/visits/",
+      path: { request_id: data.requestId },
+      body: data.requestBody,
+      mediaType: "application/json",
     })
   }
 }

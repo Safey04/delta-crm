@@ -16,9 +16,12 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as LayoutRouteImport } from './routes/_layout'
 import { Route as LayoutIndexRouteImport } from './routes/_layout/index'
 import { Route as LayoutSettingsRouteImport } from './routes/_layout/settings'
+import { Route as LayoutServiceRequestsRouteImport } from './routes/_layout/service-requests'
 import { Route as LayoutItemsRouteImport } from './routes/_layout/items'
+import { Route as LayoutEquipmentRouteImport } from './routes/_layout/equipment'
 import { Route as LayoutCustomersRouteImport } from './routes/_layout/customers'
 import { Route as LayoutAdminRouteImport } from './routes/_layout/admin'
+import { Route as LayoutServiceRequestsRequestIdRouteImport } from './routes/_layout/service-requests.$requestId'
 import { Route as LayoutCustomersCustomerIdRouteImport } from './routes/_layout/customers.$customerId'
 
 const SignupRoute = SignupRouteImport.update({
@@ -55,9 +58,19 @@ const LayoutSettingsRoute = LayoutSettingsRouteImport.update({
   path: '/settings',
   getParentRoute: () => LayoutRoute,
 } as any)
+const LayoutServiceRequestsRoute = LayoutServiceRequestsRouteImport.update({
+  id: '/service-requests',
+  path: '/service-requests',
+  getParentRoute: () => LayoutRoute,
+} as any)
 const LayoutItemsRoute = LayoutItemsRouteImport.update({
   id: '/items',
   path: '/items',
+  getParentRoute: () => LayoutRoute,
+} as any)
+const LayoutEquipmentRoute = LayoutEquipmentRouteImport.update({
+  id: '/equipment',
+  path: '/equipment',
   getParentRoute: () => LayoutRoute,
 } as any)
 const LayoutCustomersRoute = LayoutCustomersRouteImport.update({
@@ -70,6 +83,12 @@ const LayoutAdminRoute = LayoutAdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => LayoutRoute,
 } as any)
+const LayoutServiceRequestsRequestIdRoute =
+  LayoutServiceRequestsRequestIdRouteImport.update({
+    id: '/$requestId',
+    path: '/$requestId',
+    getParentRoute: () => LayoutServiceRequestsRoute,
+  } as any)
 const LayoutCustomersCustomerIdRoute =
   LayoutCustomersCustomerIdRouteImport.update({
     id: '/$customerId',
@@ -85,9 +104,12 @@ export interface FileRoutesByFullPath {
   '/signup': typeof SignupRoute
   '/admin': typeof LayoutAdminRoute
   '/customers': typeof LayoutCustomersRouteWithChildren
+  '/equipment': typeof LayoutEquipmentRoute
   '/items': typeof LayoutItemsRoute
+  '/service-requests': typeof LayoutServiceRequestsRouteWithChildren
   '/settings': typeof LayoutSettingsRoute
   '/customers/$customerId': typeof LayoutCustomersCustomerIdRoute
+  '/service-requests/$requestId': typeof LayoutServiceRequestsRequestIdRoute
 }
 export interface FileRoutesByTo {
   '/login': typeof LoginRoute
@@ -96,10 +118,13 @@ export interface FileRoutesByTo {
   '/signup': typeof SignupRoute
   '/admin': typeof LayoutAdminRoute
   '/customers': typeof LayoutCustomersRouteWithChildren
+  '/equipment': typeof LayoutEquipmentRoute
   '/items': typeof LayoutItemsRoute
+  '/service-requests': typeof LayoutServiceRequestsRouteWithChildren
   '/settings': typeof LayoutSettingsRoute
   '/': typeof LayoutIndexRoute
   '/customers/$customerId': typeof LayoutCustomersCustomerIdRoute
+  '/service-requests/$requestId': typeof LayoutServiceRequestsRequestIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -110,10 +135,13 @@ export interface FileRoutesById {
   '/signup': typeof SignupRoute
   '/_layout/admin': typeof LayoutAdminRoute
   '/_layout/customers': typeof LayoutCustomersRouteWithChildren
+  '/_layout/equipment': typeof LayoutEquipmentRoute
   '/_layout/items': typeof LayoutItemsRoute
+  '/_layout/service-requests': typeof LayoutServiceRequestsRouteWithChildren
   '/_layout/settings': typeof LayoutSettingsRoute
   '/_layout/': typeof LayoutIndexRoute
   '/_layout/customers/$customerId': typeof LayoutCustomersCustomerIdRoute
+  '/_layout/service-requests/$requestId': typeof LayoutServiceRequestsRequestIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -125,9 +153,12 @@ export interface FileRouteTypes {
     | '/signup'
     | '/admin'
     | '/customers'
+    | '/equipment'
     | '/items'
+    | '/service-requests'
     | '/settings'
     | '/customers/$customerId'
+    | '/service-requests/$requestId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/login'
@@ -136,10 +167,13 @@ export interface FileRouteTypes {
     | '/signup'
     | '/admin'
     | '/customers'
+    | '/equipment'
     | '/items'
+    | '/service-requests'
     | '/settings'
     | '/'
     | '/customers/$customerId'
+    | '/service-requests/$requestId'
   id:
     | '__root__'
     | '/_layout'
@@ -149,10 +183,13 @@ export interface FileRouteTypes {
     | '/signup'
     | '/_layout/admin'
     | '/_layout/customers'
+    | '/_layout/equipment'
     | '/_layout/items'
+    | '/_layout/service-requests'
     | '/_layout/settings'
     | '/_layout/'
     | '/_layout/customers/$customerId'
+    | '/_layout/service-requests/$requestId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -214,11 +251,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LayoutSettingsRouteImport
       parentRoute: typeof LayoutRoute
     }
+    '/_layout/service-requests': {
+      id: '/_layout/service-requests'
+      path: '/service-requests'
+      fullPath: '/service-requests'
+      preLoaderRoute: typeof LayoutServiceRequestsRouteImport
+      parentRoute: typeof LayoutRoute
+    }
     '/_layout/items': {
       id: '/_layout/items'
       path: '/items'
       fullPath: '/items'
       preLoaderRoute: typeof LayoutItemsRouteImport
+      parentRoute: typeof LayoutRoute
+    }
+    '/_layout/equipment': {
+      id: '/_layout/equipment'
+      path: '/equipment'
+      fullPath: '/equipment'
+      preLoaderRoute: typeof LayoutEquipmentRouteImport
       parentRoute: typeof LayoutRoute
     }
     '/_layout/customers': {
@@ -234,6 +285,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/admin'
       preLoaderRoute: typeof LayoutAdminRouteImport
       parentRoute: typeof LayoutRoute
+    }
+    '/_layout/service-requests/$requestId': {
+      id: '/_layout/service-requests/$requestId'
+      path: '/$requestId'
+      fullPath: '/service-requests/$requestId'
+      preLoaderRoute: typeof LayoutServiceRequestsRequestIdRouteImport
+      parentRoute: typeof LayoutServiceRequestsRoute
     }
     '/_layout/customers/$customerId': {
       id: '/_layout/customers/$customerId'
@@ -257,10 +315,25 @@ const LayoutCustomersRouteWithChildren = LayoutCustomersRoute._addFileChildren(
   LayoutCustomersRouteChildren,
 )
 
+interface LayoutServiceRequestsRouteChildren {
+  LayoutServiceRequestsRequestIdRoute: typeof LayoutServiceRequestsRequestIdRoute
+}
+
+const LayoutServiceRequestsRouteChildren: LayoutServiceRequestsRouteChildren = {
+  LayoutServiceRequestsRequestIdRoute: LayoutServiceRequestsRequestIdRoute,
+}
+
+const LayoutServiceRequestsRouteWithChildren =
+  LayoutServiceRequestsRoute._addFileChildren(
+    LayoutServiceRequestsRouteChildren,
+  )
+
 interface LayoutRouteChildren {
   LayoutAdminRoute: typeof LayoutAdminRoute
   LayoutCustomersRoute: typeof LayoutCustomersRouteWithChildren
+  LayoutEquipmentRoute: typeof LayoutEquipmentRoute
   LayoutItemsRoute: typeof LayoutItemsRoute
+  LayoutServiceRequestsRoute: typeof LayoutServiceRequestsRouteWithChildren
   LayoutSettingsRoute: typeof LayoutSettingsRoute
   LayoutIndexRoute: typeof LayoutIndexRoute
 }
@@ -268,7 +341,9 @@ interface LayoutRouteChildren {
 const LayoutRouteChildren: LayoutRouteChildren = {
   LayoutAdminRoute: LayoutAdminRoute,
   LayoutCustomersRoute: LayoutCustomersRouteWithChildren,
+  LayoutEquipmentRoute: LayoutEquipmentRoute,
   LayoutItemsRoute: LayoutItemsRoute,
+  LayoutServiceRequestsRoute: LayoutServiceRequestsRouteWithChildren,
   LayoutSettingsRoute: LayoutSettingsRoute,
   LayoutIndexRoute: LayoutIndexRoute,
 }
